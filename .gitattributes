@@ -1,0 +1,5 @@
+# Scripts run in bash/WSL/Docker; CRLF from a Windows checkout would break them.
+* text=auto eol=lf
+*.wasm binary
+*.sqlite binary
+*.zst binary
