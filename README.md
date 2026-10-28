@@ -2,8 +2,12 @@
 
 Fork Bittensor mainnet on your laptop: real subnets, stakes, validators and metagraphs, with no risk to real TAO. It's Bittensor's equivalent of Ethereum's `anvil --fork-url`.
 
+**Why it exists:** Subtensor shipped 11 runtime releases between Oct 5 and Oct 26, 2026. Each one changed something a subnet depends on: emissions (eTAO), epoch ordering, proxies or fees. Subnet builders had three places to test, and none fit: an empty localnet, a testnet that doesn't match mainnet, and mainnet itself, with real money. The chain team tests every runtime against a mainnet clone. TensorFork gives every subnet builder the same thing in one command.
+
+> Status: hackathon build (Oct 2026). Every feature below was verified end to end against real mainnet state; [research.md](research.md) has the measurements and the bugs found along the way, and [PRD.md](PRD.md) has the original plan.
+
 ```bash
-pip install .                                  # or: docker build -t tensorfork .
+pip install git+https://github.com/soumyacodes007/tensorfork   # or: docker build -t tensorfork .
 tensorfork setup                               # Node + engine into ~/.tensorfork (once)
 tensorfork snapshot pull                       # all of mainnet state: 176 MB download
 tensorfork up                                  # offline fork
@@ -78,13 +82,16 @@ your code / btcli ──> compat proxy :9944 ──> Chopsticks engine :8000 ─
 **pip** (Linux, macOS, Windows):
 
 ```bash
-pip install .              # a wheel: `uv build` -> dist/tensorfork-*.whl
+pip install git+https://github.com/soumyacodes007/tensorfork
 tensorfork setup           # downloads a pinned, checksum-verified Node + Chopsticks into ~/.tensorfork
 ```
+
+From a clone: `uv sync` (or `pip install .`), then `uv run pytest tests` for the unit tests.
 
 **Docker:**
 
 ```bash
+git clone https://github.com/soumyacodes007/tensorfork && cd tensorfork
 docker build -t tensorfork .
 docker run --rm -v ~/.tensorfork/snapshots:/data/snapshots tensorfork snapshot pull    # once
 docker run --rm -p 127.0.0.1:9944:9944 -v ~/.tensorfork/snapshots:/data/snapshots tensorfork
@@ -101,10 +108,24 @@ bash scripts/local-node.sh start     # official image, warp sync, ~1.8 GB, RPC o
 tensorfork snapshot export           # ~15 min -> ~/.tensorfork/snapshots/finney-latest.sqlite
 ```
 
+## Project layout
+
+| Path | What it is |
+|---|---|
+| `src/tensorfork/cli.py` | The `tensorfork` command |
+| `src/tensorfork/fork.py` | The Python API: `Fork`, `replay`, runtime upgrade, compare, verify |
+| `src/tensorfork/engine.py` | Starts and stops the three-process stack (Windows, Linux, macOS) |
+| `src/tensorfork/snapshot*.py` | Snapshot export, reader, offline upstream server, pack/publish/pull |
+| `src/tensorfork/js/` | Compat proxy and upstream shield (Node) |
+| `src/tensorfork/setup_engine.py` | `tensorfork setup`: Node, Chopsticks and the Windows patch |
+| `src/tensorfork/pytest_plugin.py` | The `tensorfork` pytest fixture |
+| `scripts/` | Local node, runtime build/extract, wheel and Docker tests; `spikes/` holds the day-1 probes |
+| `examples/` | A compare script and example tests against a fork |
+
 ## Limits
 
 - **Consensus and finality are mocked.** Only on-chain state transitions are real.
 - **Calls that reach BLS12-381 host functions fail** on the fork (Subtensor's timelock and drand paths).
 - **Building blocks is slow** (see Performance), so prefer `advance --tempo` over building whole tempos.
 - **Replay needs a node with the parent block's state.** A lite node keeps its `--state-pruning` window, about 13 h here.
-- **No hosted snapshot is published yet.** `snapshot pull` with no arguments reads the `snapshots` release of `$TENSORFORK_SNAPSHOT_REPO` (default `0xrick/tensorfork`). Until a snapshot is published there, pass a manifest URL or path, or export your own.
+- **No hosted snapshot is published yet.** `snapshot pull` with no arguments reads the `snapshots` release of `$TENSORFORK_SNAPSHOT_REPO` (default `soumyacodes007/tensorfork`). Until a snapshot is published there, pass a manifest URL or path, or export your own.

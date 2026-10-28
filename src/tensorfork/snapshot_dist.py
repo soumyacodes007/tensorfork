@@ -27,7 +27,7 @@ from tensorfork import paths
 from tensorfork.snapshot import Snapshot
 
 RELEASE_TAG = "snapshots"
-DEFAULT_REPO = os.environ.get("TENSORFORK_SNAPSHOT_REPO", "0xrick/tensorfork")
+DEFAULT_REPO = os.environ.get("TENSORFORK_SNAPSHOT_REPO", "soumyacodes007/tensorfork")
 CHUNK = 1 << 20
 
 

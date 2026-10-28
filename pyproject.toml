@@ -15,6 +15,10 @@ dependencies = [
     "zstandard>=0.25.0",
 ]
 
+[project.urls]
+Repository = "https://github.com/soumyacodes007/tensorfork"
+Issues = "https://github.com/soumyacodes007/tensorfork/issues"
+
 [project.scripts]
 tensorfork = "tensorfork.cli:main"
 
