@@ -1,0 +1,31 @@
+[project]
+name = "tensorfork"
+version = "0.1.0"
+description = "Fork Bittensor mainnet on your laptop"
+readme = "README.md"
+authors = [
+    { name = "0xrick", email = "rickbhowmik4@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    # bittensor-core ships no Windows wheel; on native Windows the fork runs without SDK features.
+    "bittensor==11.3.0; sys_platform != 'win32'",
+    "websockets>=13",
+    "xxhash>=4.0.2",
+    "zstandard>=0.25.0",
+]
+
+[project.scripts]
+tensorfork = "tensorfork.cli:main"
+
+[project.entry-points.pytest11]
+tensorfork = "tensorfork.pytest_plugin"
+
+[build-system]
+requires = ["uv_build>=0.12.13,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+]

@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.cache/
+dist/
+build/
+*.egg-info/
+# Snapshots and engine state are large and live in ~/.tensorfork, but keep strays out too.
+*.sqlite
+*.sqlite.partial
+*.wasm
