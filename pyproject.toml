@@ -3,6 +3,8 @@ name = "tensorfork"
 version = "0.1.0"
 description = "Fork Bittensor mainnet on your laptop"
 readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
 authors = [
     { name = "0xrick", email = "rickbhowmik4@gmail.com" }
 ]

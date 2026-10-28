@@ -9,7 +9,7 @@ Fork Bittensor mainnet on your laptop: real subnets, stakes, validators and meta
 ```bash
 pip install git+https://github.com/soumyacodes007/tensorfork   # or: docker build -t tensorfork .
 tensorfork setup                               # Node + engine into ~/.tensorfork (once)
-tensorfork snapshot pull                       # all of mainnet state: 176 MB download
+tensorfork snapshot pull                       # all of mainnet state: 176 MB from this repo's release
 tensorfork up                                  # offline fork
 btcli subnets list --network ws://127.0.0.1:9944
 ```
@@ -128,4 +128,8 @@ tensorfork snapshot export           # ~15 min -> ~/.tensorfork/snapshots/finney
 - **Calls that reach BLS12-381 host functions fail** on the fork (Subtensor's timelock and drand paths).
 - **Building blocks is slow** (see Performance), so prefer `advance --tempo` over building whole tempos.
 - **Replay needs a node with the parent block's state.** A lite node keeps its `--state-pruning` window, about 13 h here.
-- **No hosted snapshot is published yet.** `snapshot pull` with no arguments reads the `snapshots` release of `$TENSORFORK_SNAPSHOT_REPO` (default `soumyacodes007/tensorfork`). Until a snapshot is published there, pass a manifest URL or path, or export your own.
+- **The hosted snapshot is a single block (9,383,352, runtime v486, exported 2026-10-28).** It's published on this repo's [`snapshots` release](https://github.com/soumyacodes007/tensorfork/releases/tag/snapshots), which `snapshot pull` reads by default (override with `$TENSORFORK_SNAPSHOT_REPO`). For newer state, export your own from a node and `snapshot pack`/`publish` it; refreshing it automatically every night is future work.
+
+## License
+
+MIT; see [LICENSE](LICENSE).
